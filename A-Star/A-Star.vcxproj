@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\PhysBox2D\DEPENDENCIES\ThreadPool;..\PhysBox2D\DEPENDENCIES\GLFW\include;..\PhysBox2D\SOURCE\DEBUG;..\PhysBox2D\SOURCE\MATH;..\PhysBox2D\SOURCE\GRAPHICS;..\PhysBox2D\SOURCE\FUNDAMENTAL;..\PhysBox2D\SOURCE\PHYSICS;..\PhysBox2D\SOURCE\THIRD_PARTY;..\PhysBox2D\SOURCE\GAME;..\PhysBox2D\SOURCE\PLATFORM;..\PhysBox2D\DEPENDENCIES\IMGUI\backends;..\PhysBox2D\DEPENDENCIES\IMGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\PhysBox2D\DEPENDENCIES\ThreadPool;..\PhysBox2D\DEPENDENCIES\GLFW\include;..\PhysBox2D\SOURCE\DEBUG;..\PhysBox2D\SOURCE\MATH;..\PhysBox2D\SOURCE\GRAPHICS;..\PhysBox2D\SOURCE\FUNDAMENTAL;..\PhysBox2D\SOURCE\PHYSICS;..\PhysBox2D\SOURCE\THIRD_PARTY;..\PhysBox2D\SOURCE\GAME;..\PhysBox2D\SOURCE\PLATFORM;..\PhysBox2D\DEPENDENCIES\IMGUI\backends;..\PhysBox2D\DEPENDENCIES\IMGUI;..\PhysBox2D\DEPENDENCIES\IMPLOT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
