@@ -36,8 +36,8 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 }
 void MAIN_PANEL::init(void) {
-	for (size_t i = 0; i < g_grid_size; i++) {
-		for (size_t j = 0; j < g_grid_size; j++) {
+	for (int i = 0; i < g_grid_size; i++) {
+		for (int j = 0; j < g_grid_size; j++) {
 			grid[i][j].type = EMPTY;
 			grid[i][j].cost = -1.0f;
 			grid[i][j].i_value = i;
@@ -47,16 +47,16 @@ void MAIN_PANEL::init(void) {
 	grid[st_loc.first][st_loc.second].type = START;
 	grid[gl_loc.first][gl_loc.second].type = GOAL;
 
-	for (size_t i = 4; i < 25; i++) {
+	for (int i = 4; i < 25; i++) {
 		grid[20][i].type = BLOCKED;
 	}
 
-	for (size_t i = 4; i < 25; i++) {
+	for (int i = 4; i < 25; i++) {
 		grid[i][25].type = BLOCKED;
 	}
 
-	for (size_t i = 0; i < g_grid_size; i++) {
-		for (size_t j = 0; j < g_grid_size; j++) {
+	for (int i = 0; i < g_grid_size; i++) {
+		for (int j = 0; j < g_grid_size; j++) {
 			grid[i][j].h_value = (MATH_VECTOR_2D(i, j) - MATH_VECTOR_2D(gl_loc.first, gl_loc.second)).GetLength();
 		}
 	}
@@ -76,7 +76,7 @@ void MAIN_PANEL::draw_ui(void) {
 }
 
 bool  MAIN_PANEL::is_visited(int i, int j) {
-	for (size_t k = 0; k < visited.size(); k++) {
+	for (int k = 0; k < visited.size(); k++) {
 		if ((visited[k]->i_value == i) && (visited[k]->j_value == j)) {
 			return true;
 		}
@@ -85,7 +85,7 @@ bool  MAIN_PANEL::is_visited(int i, int j) {
 }
 
 bool  MAIN_PANEL::is_open(int i, int j) {
-	for (size_t k = 0; k < open.size(); k++) {
+	for (int k = 0; k < open.size(); k++) {
 		if ((open[k]->i_value == i) && (open[k]->j_value == j)) {
 			return true;
 		}
@@ -99,7 +99,7 @@ void  MAIN_PANEL::add_open(int i, int j) {
 		float cost = current_loc_step + grid[i][j].h_value;
 
 		if (grid[i][j].cost == -1.0f || cost < grid[i][j].cost) {
-			grid[i][j].g_value = current_loc_step;
+			grid[i][j].g_value = float(current_loc_step);
 			grid[i][j].cost = grid[i][j].g_value + grid[i][j].h_value;
 
 			grid[i][j].path = grid[current_loc.first][current_loc.second].path;
@@ -137,7 +137,7 @@ void  MAIN_PANEL::remove_open(int i, int j) {
 }
 
 void MAIN_PANEL::find_smallest_open() {
-	int cost = 100000;
+	float cost = 100000.0;
 	GRID_BLOCK* smallest_block = nullptr;
 
 	for (size_t k = 0; k < open.size(); k++) {
@@ -172,8 +172,8 @@ void  MAIN_PANEL::add_neighbours(int current_i, int current_j) {
 }
 
 void MAIN_PANEL::draw(void) {
-	for (size_t i = 0; i < g_grid_size; i++) {
-		for (size_t j = 0; j < g_grid_size; j++) {
+	for (int i = 0; i < g_grid_size; i++) {
+		for (int j = 0; j < g_grid_size; j++) {
 
 			BLOCK_TYPE type = grid[i][j].type;
 			glPushMatrix();
