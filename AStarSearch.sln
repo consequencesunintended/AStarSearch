@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysBox2D", "PhysBox2D\PhysBox2D.vcxproj", "{1D967EBA-60C1-4053-8B6A-F5A72173703A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A-Star", "A-Star\A-Star.vcxproj", "{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A} = {1D967EBA-60C1-4053-8B6A-F5A72173703A}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Debug|x64.ActiveCfg = Debug|x64
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Debug|x64.Build.0 = Debug|x64
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Debug|x86.ActiveCfg = Debug|Win32
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Debug|x86.Build.0 = Debug|Win32
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Release|x64.ActiveCfg = Release|x64
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Release|x64.Build.0 = Release|x64
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Release|x86.ActiveCfg = Release|Win32
+		{1D967EBA-60C1-4053-8B6A-F5A72173703A}.Release|x86.Build.0 = Release|Win32
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Debug|x64.ActiveCfg = Debug|x64
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Debug|x64.Build.0 = Debug|x64
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Debug|x86.ActiveCfg = Debug|Win32
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Debug|x86.Build.0 = Debug|Win32
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Release|x64.ActiveCfg = Release|x64
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Release|x64.Build.0 = Release|x64
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Release|x86.ActiveCfg = Release|Win32
+		{398FCF04-4C8F-4DBF-AD49-C00DE54ACF71}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F6D4A43-58D7-4D5E-96A2-65454F8F18C6}
+	EndGlobalSection
+EndGlobal
