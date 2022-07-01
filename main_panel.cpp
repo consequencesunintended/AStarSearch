@@ -94,7 +94,7 @@ bool  MAIN_PANEL::is_open(int i, int j) {
 }
 
 void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
-	if (grid[i][j].type != BLOCKED) {
+	if (!is_visited(i, j) && grid[i][j].type != BLOCKED) {
 
 		float cost = current_loc_step + grid[i][j].h_value;
 
@@ -104,10 +104,6 @@ void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
 
 			grid[i][j].path = grid[current_loc.first][current_loc.second].path;
 			grid[i][j].path.push_back(&grid[current_loc.first][current_loc.second]);
-
-			if (is_visited(i, j)) {
-				remove_visited(i, j);
-			}
 		}
 
 		if (!is_open(i, j) && !is_visited(i, j)) {

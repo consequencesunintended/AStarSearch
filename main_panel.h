@@ -60,7 +60,7 @@ private:
 	std::map<int, std::map<int, GRID_BLOCK>>	grid;
 	std::vector<GRID_BLOCK*>	visited;
 	std::vector<GRID_BLOCK*>	open;
-	std::pair<int, int>	st_loc{ 3,22 };
+	std::pair<int, int>	st_loc{ 3,4 };
 	std::pair<int, int> gl_loc{ 36,22 };
 	std::pair<int, int> current_loc;
 	int current_loc_step = 0;
