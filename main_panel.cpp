@@ -96,10 +96,11 @@ bool  MAIN_PANEL::is_open(int i, int j) {
 void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
 	if (!is_visited(i, j) && grid[i][j].type != BLOCKED) {
 
-		float cost = current_loc_step + grid[i][j].h_value;
+		float new_g_value = float(current_loc_step) + move_distance;
+		float cost = new_g_value + grid[i][j].h_value;
 
 		if (grid[i][j].cost == -1.0f || cost < grid[i][j].cost) {
-			grid[i][j].g_value = float(current_loc_step) + move_distance;
+			grid[i][j].g_value = new_g_value;
 			grid[i][j].cost = grid[i][j].g_value + grid[i][j].h_value;
 
 			grid[i][j].path = grid[current_loc.first][current_loc.second].path;
