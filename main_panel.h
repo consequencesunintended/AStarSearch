@@ -33,7 +33,7 @@ public:
 	bool			is_visited(int i, int j);
 	bool			is_open(int i, int j);
 	void			add_neighbours(int current_i, int current_j);
-	void			add_open(int i, int j);
+	void			add_open(int i, int j, float move_distance);
 	void			remove_open(int i, int j);
 	void			remove_visited(int i, int j);
 	void			find_smallest_open();

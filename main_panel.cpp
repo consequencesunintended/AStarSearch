@@ -93,13 +93,13 @@ bool  MAIN_PANEL::is_open(int i, int j) {
 	return false;
 }
 
-void  MAIN_PANEL::add_open(int i, int j) {
+void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
 	if (grid[i][j].type != BLOCKED) {
 
 		float cost = current_loc_step + grid[i][j].h_value;
 
 		if (grid[i][j].cost == -1.0f || cost < grid[i][j].cost) {
-			grid[i][j].g_value = float(current_loc_step);
+			grid[i][j].g_value = float(current_loc_step) + move_distance;
 			grid[i][j].cost = grid[i][j].g_value + grid[i][j].h_value;
 
 			grid[i][j].path = grid[current_loc.first][current_loc.second].path;
@@ -160,15 +160,15 @@ void MAIN_PANEL::find_smallest_open() {
 }
 
 void  MAIN_PANEL::add_neighbours(int current_i, int current_j) {
-	add_open(current_i + 1,current_j);
-	add_open(current_i - 1,current_j);
-	add_open(current_i,current_j + 1);
-	add_open(current_i,current_j - 1);
+	add_open(current_i + 1,current_j, 1.0f);
+	add_open(current_i - 1,current_j, 1.0f);
+	add_open(current_i,current_j + 1, 1.0f);
+	add_open(current_i,current_j - 1, 1.0f);
 
-	add_open(current_i + 1, current_j + 1);
-	add_open(current_i + 1, current_j - 1);
-	add_open(current_i - 1, current_j + 1);
-	add_open(current_i - 1, current_j - 1);
+	add_open(current_i + 1, current_j + 1, 1.5f);
+	add_open(current_i + 1, current_j - 1, 1.5f);
+	add_open(current_i - 1, current_j + 1, 1.5f);
+	add_open(current_i - 1, current_j - 1, 1.5f);
 }
 
 void MAIN_PANEL::draw(void) {
@@ -217,7 +217,6 @@ void MAIN_PANEL::draw(void) {
 
 void MAIN_PANEL::update() {
 	if (current_loc.first != gl_loc.first || current_loc.second != gl_loc.second) {
-		current_loc_step++;
 		add_neighbours(current_loc.first, current_loc.second);
 		find_smallest_open();
 	}
