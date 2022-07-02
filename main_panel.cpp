@@ -51,9 +51,6 @@ void MAIN_PANEL::init(void) {
 		m_grid[20][i].type = BLOCKED;
 	}
 
-	for (int i = 4; i < 25; i++) {
-		m_grid[30][i].type = BLOCKED;
-	}
 
 	for (int i = 4; i < 25; i++) {
 		m_grid[i][25].type = BLOCKED;
@@ -98,6 +95,7 @@ bool  MAIN_PANEL::is_open(int i, int j) {
 }
 
 void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
+
 	if (m_grid[i][j].type != BLOCKED) {
 
 		float new_g_value = float(m_current_loc_step) + move_distance;
@@ -219,8 +217,13 @@ void MAIN_PANEL::draw(void) {
 
 
 void MAIN_PANEL::update() {
+	// did we reach the goal yet
 	if (m_current_loc.first != m_goal_loc.first || m_current_loc.second != m_goal_loc.second) {
+
+		// add all neighbouring blocks as open nodes if they are not blocked/visited/opened
 		add_neighbours(m_current_loc.first, m_current_loc.second);
+
+		// find the open node with the smallest cost and add it as visited
 		find_smallest_open();
 	}
 }

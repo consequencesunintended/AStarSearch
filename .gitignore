@@ -115,3 +115,4 @@ x64/Release/PhysBox2D.lib
 x64/Release/PhysBox2D.pdb
 .vs/AStarSearch/FileContentIndex/bad90558-eff2-4386-b6f1-0723ba370c24.vsidx
 .vs/AStarSearch/FileContentIndex/c53521a0-4cfb-4bb7-8c20-0c660ff2f6ca.vsidx
+*.vsidx
