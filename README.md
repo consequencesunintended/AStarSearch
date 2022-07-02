@@ -1,2 +1,3 @@
 # A* Search
-<p><img src="https://user-images.githubusercontent.com/44167267/176981538-27d61a50-55f2-445c-97a1-db1e4540a3e9.png" alt="" width="700" height="445" /></p>
+
+![search](https://user-images.githubusercontent.com/44167267/176981820-b83ad7f0-a44c-4353-a602-f569ff2faab4.gif)
