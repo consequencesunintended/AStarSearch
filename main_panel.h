@@ -71,5 +71,7 @@ private:
 	float										m_curosr_y;
 	bool										m_left_down{ false };
 	bool										m_right_down{ false };
+	bool										m_shift_down{ false };
+	bool										m_ctrl_down{ false };
 
 };

@@ -15,6 +15,7 @@ int get_coord_from_location(int location) {
 }
 
 void MAIN_PANEL::controls(GLFWwindow* window, int key, int scancode, int action, int mods) {
+
 }
 
 void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action, int mods) {
@@ -24,6 +25,31 @@ void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 		m_right_down = action == GLFW_PRESS;
+	}
+
+	m_shift_down =	mods == GLFW_MOD_SHIFT;
+	m_ctrl_down	 =	mods == GLFW_MOD_CONTROL;
+
+	float location_x = m_curosr_x - g_panel_width / 2.0f;
+	float location_y = -m_curosr_y + g_panel_height / 2.0f;
+
+	int grid_x = get_coord_from_location(location_x);
+	int grid_y = get_coord_from_location(location_y);
+
+	if (m_shift_down) {
+		m_grid[m_start_loc.first][m_start_loc.second].type = EMPTY;
+		m_grid[grid_x][grid_y].type = START;
+		m_start_loc.first = grid_x;
+		m_start_loc.second = grid_y;
+
+		m_current_loc = m_start_loc;
+	}
+
+	if (m_ctrl_down) {
+		m_grid[m_goal_loc.first][m_goal_loc.second].type = EMPTY;
+		m_grid[grid_x][grid_y].type = GOAL;
+		m_goal_loc.first = grid_x;
+		m_goal_loc.second = grid_y;
 	}
 }
 
@@ -40,7 +66,10 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 
 		if (m_grid[grid_x][grid_y].type != GOAL || m_grid[grid_x][grid_y].type != START) {
-			m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
+
+			if (!m_shift_down && !m_ctrl_down) {
+				m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
+			}
 		}
 	}
 }
