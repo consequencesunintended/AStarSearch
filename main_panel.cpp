@@ -45,18 +45,10 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 void MAIN_PANEL::init(void) {
-	reset();
-}
-
-void MAIN_PANEL::reset(void) {
-	m_open.clear();
-	m_visited.clear();
-	m_grid.clear();
 
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
 			m_grid[i][j].type = EMPTY;
-			m_grid[i][j].cost = -1.0f;
 			m_grid[i][j].i_value = i;
 			m_grid[i][j].j_value = j;
 		}
@@ -68,9 +60,24 @@ void MAIN_PANEL::reset(void) {
 		m_grid[20][i].type = BLOCKED;
 	}
 
-
 	for (int i = 4; i < 25; i++) {
 		m_grid[i][25].type = BLOCKED;
+	}
+
+	reset();
+}
+
+void MAIN_PANEL::reset(void) {
+	m_open.clear();
+	m_visited.clear();
+
+	for (int i = 0; i < g_grid_size; i++) {
+		for (int j = 0; j < g_grid_size; j++) {
+			m_grid[i][j].cost = -1.0f;
+			m_grid[i][j].h_value = 0.0f;
+			m_grid[i][j].g_value = 0.0f;
+			m_grid[i][j].path.clear();
+		}
 	}
 
 	for (int i = 0; i < g_grid_size; i++) {
