@@ -66,7 +66,7 @@ void MAIN_PANEL::reset(void) {
 
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].h_value = (MATH_VECTOR_2D(i, j) - MATH_VECTOR_2D(m_goal_loc.first, m_goal_loc.second)).GetLength();
+			m_grid[i][j].h_value = (MATH_VECTOR_2D(float(i), float(j)) - MATH_VECTOR_2D(float(m_goal_loc.first), float(m_goal_loc.second))).GetLength();
 		}
 	}
 	m_current_loc = m_start_loc;
@@ -223,7 +223,7 @@ void MAIN_PANEL::draw(void) {
 				colour = GRAPHICS_COLOUR::Yellow();
 			}
 
-			GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(i * box_size, j * box_size), box_size, box_size, true, colour);
+			GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(float(i * box_size), float(j * box_size)), box_size, box_size, true, colour);
 			glPopMatrix();
 		}
 	}
@@ -236,7 +236,7 @@ void MAIN_PANEL::draw(void) {
 		glPushMatrix();
 		glTranslatef(-g_grid_size / 2.0f * box_size, -g_grid_size / 2.0f * box_size, 0.0f);
 
-		GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(current_i * box_size, current_j * box_size), box_size, box_size, true, GRAPHICS_COLOUR::Orange());
+		GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(float(current_i * box_size), float(current_j * box_size)), box_size, box_size, true, GRAPHICS_COLOUR::Orange());
 		glPopMatrix();
 	}
 }
