@@ -113,6 +113,15 @@ void MAIN_PANEL::draw_ui(void) {
 		}
 	}
 	ImGui::SameLine();
+
+	if (ImGui::Button("Resolve")) {
+		while (m_a_star_search.update_search()) {
+
+		}
+		m_start_search = true;
+	}
+	ImGui::SameLine();
+
 	if (ImGui::Button("Reset")) {
 		m_a_star_search.reset();
 		m_start_search = false;
