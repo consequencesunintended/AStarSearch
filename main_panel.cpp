@@ -113,6 +113,11 @@ void MAIN_PANEL::draw_ui(void) {
 		m_start_search = false;
 	}
 
+	ImGui::Text("Help:");
+	ImGui::BulletText("");
+	ImGui::SameLine();
+	ImGui::TextWrapped("Left/Right Mouse button: Add/Remove wall");
+
 	ImGui::End();
 }
 
