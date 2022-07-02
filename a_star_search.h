@@ -40,6 +40,8 @@ public:
 
 	void			set_start_location(int i, int j);
 	void			set_goal_location(int i, int j);
+	void			set_wall_location(int i, int j);
+	void			set_empty_location(int i, int j);
 
 	bool			is_visited(int i, int j);
 	bool			is_open(int i, int j);

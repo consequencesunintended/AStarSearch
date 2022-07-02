@@ -20,6 +20,18 @@ void A_STAR_SEARCH::set_start_location(int i, int j) {
 	update_heuristic_values();
 }
 
+void A_STAR_SEARCH::set_empty_location(int i, int j) {
+	m_grid[i][j].type = EMPTY;
+	m_grid[i][j].i_value = i;
+	m_grid[i][j].j_value = j;
+}
+
+void A_STAR_SEARCH::set_wall_location(int i, int j) {
+	m_grid[i][j].type = BLOCKED;
+	m_grid[i][j].i_value = i;
+	m_grid[i][j].j_value = j;
+}
+
 
 void A_STAR_SEARCH::update_heuristic_values() {
 
@@ -34,12 +46,12 @@ void A_STAR_SEARCH::reset(void) {
 	m_open.clear();
 	m_visited.clear();
 
-	for (int i = 0; i < g_grid_size; i++) {
-		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].cost = -1.0f;
-			m_grid[i][j].h_value = 0.0f;
-			m_grid[i][j].g_value = 0.0f;
-			m_grid[i][j].path.clear();
+	for (auto &entity: m_grid) {
+		for(auto &internal_entity: entity.second) {
+			internal_entity.second.cost = -1.0f;
+			internal_entity.second.h_value = 0.0f;
+			internal_entity.second.g_value = 0.0f;
+			internal_entity.second.path.clear();
 		}
 	}
 	update_heuristic_values();

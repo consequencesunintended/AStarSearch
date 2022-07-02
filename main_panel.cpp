@@ -77,20 +77,18 @@ void MAIN_PANEL::init(void) {
 
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
-			 m_a_star_search.m_grid[i][j].type = EMPTY;
-			 m_a_star_search.m_grid[i][j].i_value = i;
-			 m_a_star_search.m_grid[i][j].j_value = j;
+			 m_a_star_search.set_empty_location(i, j);
 		}
 	}
-	 m_a_star_search.m_grid[m_a_star_search.m_start_loc.first][m_a_star_search.m_start_loc.second].type = START;
-	 m_a_star_search.m_grid[m_a_star_search.m_goal_loc.first][m_a_star_search.m_goal_loc.second].type = GOAL;
+	m_a_star_search.set_start_location(m_a_star_search.m_start_loc.first, m_a_star_search.m_start_loc.second);
+	m_a_star_search.set_goal_location(m_a_star_search.m_goal_loc.first, m_a_star_search.m_goal_loc.second);
 
 	for (int i = 4; i < 25; i++) {
-		 m_a_star_search.m_grid[20][i].type = BLOCKED;
+		 m_a_star_search.set_wall_location(20, i);
 	}
 
 	for (int i = 4; i < 25; i++) {
-		 m_a_star_search.m_grid[i][25].type = BLOCKED;
+		m_a_star_search.set_wall_location(i, 25);
 	}
 	m_a_star_search.reset();
 }
