@@ -36,20 +36,21 @@ void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action
 	int grid_x = get_coord_from_location(location_x);
 	int grid_y = get_coord_from_location(location_y);
 
-	if (m_shift_down) {
+	if (m_shift_down && m_grid[grid_x][grid_y].type != GOAL) {
 		m_grid[m_start_loc.first][m_start_loc.second].type = EMPTY;
 		m_grid[grid_x][grid_y].type = START;
 		m_start_loc.first = grid_x;
 		m_start_loc.second = grid_y;
-
 		m_current_loc = m_start_loc;
+		update_heuristic_values();
 	}
 
-	if (m_ctrl_down) {
+	if (m_ctrl_down && m_grid[grid_x][grid_y].type != START) {
 		m_grid[m_goal_loc.first][m_goal_loc.second].type = EMPTY;
 		m_grid[grid_x][grid_y].type = GOAL;
 		m_goal_loc.first = grid_x;
 		m_goal_loc.second = grid_y;
+		update_heuristic_values();
 	}
 }
 
@@ -96,6 +97,15 @@ void MAIN_PANEL::init(void) {
 	reset();
 }
 
+void MAIN_PANEL::update_heuristic_values() {
+
+	for (int i = 0; i < g_grid_size; i++) {
+		for (int j = 0; j < g_grid_size; j++) {
+			m_grid[i][j].h_value = (MATH_VECTOR_2D(float(i), float(j)) - MATH_VECTOR_2D(float(m_goal_loc.first), float(m_goal_loc.second))).GetLength();
+		}
+	}
+}
+
 void MAIN_PANEL::reset(void) {
 	m_open.clear();
 	m_visited.clear();
@@ -108,12 +118,7 @@ void MAIN_PANEL::reset(void) {
 			m_grid[i][j].path.clear();
 		}
 	}
-
-	for (int i = 0; i < g_grid_size; i++) {
-		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].h_value = (MATH_VECTOR_2D(float(i), float(j)) - MATH_VECTOR_2D(float(m_goal_loc.first), float(m_goal_loc.second))).GetLength();
-		}
-	}
+	update_heuristic_values();
 	m_current_loc = m_start_loc;
 }
 

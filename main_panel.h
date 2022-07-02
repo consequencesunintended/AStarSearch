@@ -39,6 +39,7 @@ public:
 	void			remove_open(int i, int j);
 	void			remove_visited(int i, int j);
 	void			find_smallest_open();
+	void			update_heuristic_values();
 
 private:
 
