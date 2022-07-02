@@ -147,6 +147,14 @@ void MAIN_PANEL::draw_ui(void) {
 	ImGui::SameLine();
 	ImGui::TextWrapped("Left/Right Mouse button: Add/Remove wall");
 
+	ImGui::BulletText("");
+	ImGui::SameLine();
+	ImGui::TextWrapped("Shift + Mouse button: To Change Start");
+
+	ImGui::BulletText("");
+	ImGui::SameLine();
+	ImGui::TextWrapped("Ctrl + Mouse button: To Change Goal");
+
 	ImGui::End();
 }
 
@@ -274,13 +282,29 @@ void MAIN_PANEL::draw(void) {
 		}
 	}
 
-	for (size_t i = 0; i < m_grid[m_current_loc.first][m_current_loc.second].path.size(); i++) {
-		int current_i = m_grid[m_current_loc.first][m_current_loc.second].path[i]->i_value;
-		int current_j = m_grid[m_current_loc.first][m_current_loc.second].path[i]->j_value;
+	if (m_current_loc.first == m_goal_loc.first && m_current_loc.second == m_goal_loc.second) {
+		MATH_VECTOR_2D start_coord = MATH_VECTOR_2D{ float(m_start_loc.first), float(m_start_loc.second) };
+		MATH_VECTOR_2D start_loc;
+		MATH_VECTOR_2D end_loc;
 
+		for (size_t i = 0; i < m_grid[m_current_loc.first][m_current_loc.second].path.size(); i++) {
+			int current_i = m_grid[m_current_loc.first][m_current_loc.second].path[i]->i_value;
+			int current_j = m_grid[m_current_loc.first][m_current_loc.second].path[i]->j_value;
 
-		GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(get_box_location(current_i), get_box_location(current_j)), g_box_size, g_box_size, true, GRAPHICS_COLOUR::Orange());
+			start_loc = MATH_VECTOR_2D(get_box_location(start_coord.X), get_box_location(start_coord.Y));
+			end_loc = MATH_VECTOR_2D(get_box_location(current_i), get_box_location(current_j));
+
+			GRAPHICS_UTILITY::draw_line(start_loc, end_loc);
+
+			start_coord.X = current_i;
+			start_coord.Y = current_j;
+			start_loc = end_loc;
+		}
+		end_loc = MATH_VECTOR_2D(get_box_location(m_goal_loc.first), get_box_location(m_goal_loc.second));
+		GRAPHICS_UTILITY::draw_line(start_loc, end_loc);
 	}
+
+
 }
 
 
