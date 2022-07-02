@@ -6,9 +6,8 @@
 void A_STAR_SEARCH::set_goal_location(int i, int j) {
 	m_grid[m_goal_loc.first][m_goal_loc.second].type = EMPTY;
 	m_grid[i][j].type = GOAL;
-	m_start_loc.first = i;
-	m_start_loc.second = j;
-	m_current_loc = m_start_loc;
+	m_goal_loc.first = i;
+	m_goal_loc.second = j;
 	update_heuristic_values();
 }
 
