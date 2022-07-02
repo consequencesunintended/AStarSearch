@@ -36,10 +36,16 @@ void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action
 
 	if (m_shift_down && m_a_star_search.m_grid[grid_x][grid_y].type != GOAL) {
 		m_a_star_search.set_goal_location(grid_x, grid_y);
+		m_a_star_search.reset();
+		m_start_search = false;
+		m_goal_reached = false;
 	}
 
 	if (m_ctrl_down &&  m_a_star_search.m_grid[grid_x][grid_y].type != START) {
 		m_a_star_search.set_start_location(grid_x, grid_y);
+		m_a_star_search.reset();
+		m_start_search = false;
+		m_goal_reached = false;
 	}
 }
 
@@ -60,6 +66,9 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 			if (!m_shift_down && !m_ctrl_down) {
 				 m_a_star_search.m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
+				 m_a_star_search.reset();
+				 m_start_search = false;
+				 m_goal_reached = false;
 			}
 		}
 	}
