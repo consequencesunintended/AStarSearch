@@ -16,7 +16,7 @@ constexpr float				g_panel_height{ 620.0f };
 class MAIN_PANEL : public PANEL_INTERFACE {
 public:
 	void			init() override;
-	
+	void			reset();
 	void			draw_ui();
 	void			draw() override;
 	void			update() override;
@@ -31,6 +31,7 @@ private:
 	float										m_curosr_x;
 	float										m_curosr_y;
 	bool										m_start_search{ false };
+	bool										m_initial_step_done{ false };
 	bool										m_left_down{ false };
 	bool										m_right_down{ false };
 	bool										m_shift_down{ false };

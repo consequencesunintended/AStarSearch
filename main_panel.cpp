@@ -36,17 +36,22 @@ void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action
 
 	if (m_shift_down && m_a_star_search.m_grid[grid_x][grid_y].type != GOAL) {
 		m_a_star_search.set_goal_location(grid_x, grid_y);
-		m_a_star_search.reset();
+		reset();
 		m_start_search = false;
 		m_goal_reached = false;
 	}
 
 	if (m_ctrl_down &&  m_a_star_search.m_grid[grid_x][grid_y].type != START) {
 		m_a_star_search.set_start_location(grid_x, grid_y);
-		m_a_star_search.reset();
+		reset();
 		m_start_search = false;
 		m_goal_reached = false;
 	}
+}
+
+void MAIN_PANEL::reset() {
+	m_a_star_search.reset();
+	m_initial_step_done = false;
 }
 
 
@@ -90,12 +95,7 @@ void MAIN_PANEL::init(void) {
 	for (int i = 4; i < 25; i++) {
 		m_a_star_search.set_wall_location(i, 25);
 	}
-	m_a_star_search.reset();
-}
-
-void ImGuiToggleButton(const char* str_id, bool* v) {
-
-
+	reset();
 }
 
 void MAIN_PANEL::draw_ui(void) {
@@ -115,7 +115,7 @@ void MAIN_PANEL::draw_ui(void) {
 	ImGui::SameLine();
 
 	if (ImGui::Button("Resolve")) {
-		while (m_a_star_search.update_search()) {
+		while (m_a_star_search.update_search() && (!m_initial_step_done || m_a_star_search.has_open_node() )) {
 
 		}
 		m_start_search = true;
@@ -123,7 +123,7 @@ void MAIN_PANEL::draw_ui(void) {
 	ImGui::SameLine();
 
 	if (ImGui::Button("Reset")) {
-		m_a_star_search.reset();
+		reset();
 		m_start_search = false;
 		m_goal_reached = false;
 	}
@@ -199,10 +199,10 @@ void MAIN_PANEL::draw(void) {
 
 
 void MAIN_PANEL::update() {
-
 	if (m_start_search) {
 		m_goal_reached = !m_a_star_search.update_search();
 	}
+	m_initial_step_done = true;
 }
 
 

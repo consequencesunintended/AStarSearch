@@ -45,6 +45,7 @@ public:
 
 	bool			is_visited(int i, int j);
 	bool			is_open(int i, int j);
+	bool			has_open_node() { return !m_open.empty(); }
 
 protected:
 	void			add_neighbours(int current_i, int current_j);
