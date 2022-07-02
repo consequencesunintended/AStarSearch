@@ -57,12 +57,12 @@ private:
 		float		g_value;
 		std::vector<GRID_BLOCK*> path;
 	};
-	std::map<int, std::map<int, GRID_BLOCK>>	grid;
-	std::vector<GRID_BLOCK*>	visited;
-	std::vector<GRID_BLOCK*>	open;
-	std::pair<int, int>	st_loc{ 3,4 };
-	std::pair<int, int> gl_loc{ 36,22 };
-	std::pair<int, int> current_loc;
-	int current_loc_step = 0;
+	std::map<int, std::map<int, GRID_BLOCK>>	m_grid;
+	std::vector<GRID_BLOCK*>					m_visited;
+	std::vector<GRID_BLOCK*>					m_open;
+	std::pair<int, int>							m_start_loc{ 3,4 };
+	std::pair<int, int>							m_goal_loc{ 36,22 };
+	std::pair<int, int>							m_current_loc;
+	float										m_current_loc_step = 0;
 
 };

@@ -38,29 +38,33 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 void MAIN_PANEL::init(void) {
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
-			grid[i][j].type = EMPTY;
-			grid[i][j].cost = -1.0f;
-			grid[i][j].i_value = i;
-			grid[i][j].j_value = j;
+			m_grid[i][j].type = EMPTY;
+			m_grid[i][j].cost = -1.0f;
+			m_grid[i][j].i_value = i;
+			m_grid[i][j].j_value = j;
 		}
 	}
-	grid[st_loc.first][st_loc.second].type = START;
-	grid[gl_loc.first][gl_loc.second].type = GOAL;
+	m_grid[m_start_loc.first][m_start_loc.second].type = START;
+	m_grid[m_goal_loc.first][m_goal_loc.second].type = GOAL;
 
 	for (int i = 4; i < 25; i++) {
-		grid[20][i].type = BLOCKED;
+		m_grid[20][i].type = BLOCKED;
 	}
 
 	for (int i = 4; i < 25; i++) {
-		grid[i][25].type = BLOCKED;
+		m_grid[30][i].type = BLOCKED;
+	}
+
+	for (int i = 4; i < 25; i++) {
+		m_grid[i][25].type = BLOCKED;
 	}
 
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
-			grid[i][j].h_value = (MATH_VECTOR_2D(i, j) - MATH_VECTOR_2D(gl_loc.first, gl_loc.second)).GetLength();
+			m_grid[i][j].h_value = (MATH_VECTOR_2D(i, j) - MATH_VECTOR_2D(m_goal_loc.first, m_goal_loc.second)).GetLength();
 		}
 	}
-	current_loc = st_loc;
+	m_current_loc = m_start_loc;
 }
 
 void MAIN_PANEL::reset(void) {
@@ -76,8 +80,8 @@ void MAIN_PANEL::draw_ui(void) {
 }
 
 bool  MAIN_PANEL::is_visited(int i, int j) {
-	for (int k = 0; k < visited.size(); k++) {
-		if ((visited[k]->i_value == i) && (visited[k]->j_value == j)) {
+	for (int k = 0; k < m_visited.size(); k++) {
+		if ((m_visited[k]->i_value == i) && (m_visited[k]->j_value == j)) {
 			return true;
 		}
 	}
@@ -85,8 +89,8 @@ bool  MAIN_PANEL::is_visited(int i, int j) {
 }
 
 bool  MAIN_PANEL::is_open(int i, int j) {
-	for (int k = 0; k < open.size(); k++) {
-		if ((open[k]->i_value == i) && (open[k]->j_value == j)) {
+	for (int k = 0; k < m_open.size(); k++) {
+		if ((m_open[k]->i_value == i) && (m_open[k]->j_value == j)) {
 			return true;
 		}
 	}
@@ -94,32 +98,32 @@ bool  MAIN_PANEL::is_open(int i, int j) {
 }
 
 void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
-	if (grid[i][j].type != BLOCKED) {
+	if (m_grid[i][j].type != BLOCKED) {
 
-		float new_g_value = float(current_loc_step) + move_distance;
-		float cost = new_g_value + grid[i][j].h_value;
+		float new_g_value = float(m_current_loc_step) + move_distance;
+		float cost = new_g_value + m_grid[i][j].h_value;
 
-		if (grid[i][j].cost == -1.0f || cost < grid[i][j].cost) {
-			grid[i][j].g_value = new_g_value;
-			grid[i][j].cost = grid[i][j].g_value + grid[i][j].h_value;
+		if (m_grid[i][j].cost == -1.0f || cost < m_grid[i][j].cost) {
+			m_grid[i][j].g_value = new_g_value;
+			m_grid[i][j].cost = m_grid[i][j].g_value + m_grid[i][j].h_value;
 
-			grid[i][j].path = grid[current_loc.first][current_loc.second].path;
-			grid[i][j].path.push_back(&grid[current_loc.first][current_loc.second]);
+			m_grid[i][j].path = m_grid[m_current_loc.first][m_current_loc.second].path;
+			m_grid[i][j].path.push_back(&m_grid[m_current_loc.first][m_current_loc.second]);
 
 			remove_visited(i, j);
 		}
 
 		if (!is_open(i, j) && !is_visited(i, j)) {
-			open.push_back(&grid[i][j]);
+			m_open.push_back(&m_grid[i][j]);
 		}
 	}
 }
 
 void  MAIN_PANEL::remove_visited(int i, int j) {
 
-	for (size_t k = 0; k < visited.size(); k++) {
-		if (visited[k]->i_value == i && visited[k]->j_value == j) {
-			visited.erase(visited.begin() + k);
+	for (size_t k = 0; k < m_visited.size(); k++) {
+		if (m_visited[k]->i_value == i && m_visited[k]->j_value == j) {
+			m_visited.erase(m_visited.begin() + k);
 			break;
 		}
 	}
@@ -127,9 +131,9 @@ void  MAIN_PANEL::remove_visited(int i, int j) {
 
 void  MAIN_PANEL::remove_open(int i, int j) {
 
-	for (size_t k = 0; k < open.size(); k++) {
-		if (open[k]->i_value == i && open[k]->j_value == j) {
-			open.erase(open.begin() + k);
+	for (size_t k = 0; k < m_open.size(); k++) {
+		if (m_open[k]->i_value == i && m_open[k]->j_value == j) {
+			m_open.erase(m_open.begin() + k);
 			break;
 		}
 	}
@@ -139,21 +143,21 @@ void MAIN_PANEL::find_smallest_open() {
 	float cost = 100000.0;
 	GRID_BLOCK* smallest_block = nullptr;
 
-	for (size_t k = 0; k < open.size(); k++) {
+	for (size_t k = 0; k < m_open.size(); k++) {
 
-		if (open[k]->cost < cost || (smallest_block && open[k]->cost == smallest_block->cost && open[k]->h_value < smallest_block->h_value)) {
-			cost = open[k]->cost;
-			smallest_block = open[k];
+		if (m_open[k]->cost < cost || (smallest_block && m_open[k]->cost == smallest_block->cost && m_open[k]->h_value < smallest_block->h_value)) {
+			cost = m_open[k]->cost;
+			smallest_block = m_open[k];
 		}
 	}
 	
 
 	if (smallest_block) {
-		current_loc.first = smallest_block->i_value;
-		current_loc.second = smallest_block->j_value;
-		current_loc_step = smallest_block->g_value;
+		m_current_loc.first = smallest_block->i_value;
+		m_current_loc.second = smallest_block->j_value;
+		m_current_loc_step = smallest_block->g_value;
 
-		visited.push_back(smallest_block);
+		m_visited.push_back(smallest_block);
 		remove_open(smallest_block->i_value, smallest_block->j_value);
 	}
 }
@@ -174,7 +178,7 @@ void MAIN_PANEL::draw(void) {
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
 
-			BLOCK_TYPE type = grid[i][j].type;
+			BLOCK_TYPE type = m_grid[i][j].type;
 			glPushMatrix();
 			glTranslatef(-g_grid_size / 2.0f * box_size, -g_grid_size / 2.0f * box_size, 0.0f);
 
@@ -200,9 +204,9 @@ void MAIN_PANEL::draw(void) {
 		}
 	}
 
-	for (size_t i = 0; i < grid[current_loc.first][current_loc.second].path.size(); i++) {
-		int current_i = grid[current_loc.first][current_loc.second].path[i]->i_value;
-		int current_j = grid[current_loc.first][current_loc.second].path[i]->j_value;
+	for (size_t i = 0; i < m_grid[m_current_loc.first][m_current_loc.second].path.size(); i++) {
+		int current_i = m_grid[m_current_loc.first][m_current_loc.second].path[i]->i_value;
+		int current_j = m_grid[m_current_loc.first][m_current_loc.second].path[i]->j_value;
 
 
 		glPushMatrix();
@@ -215,8 +219,8 @@ void MAIN_PANEL::draw(void) {
 
 
 void MAIN_PANEL::update() {
-	if (current_loc.first != gl_loc.first || current_loc.second != gl_loc.second) {
-		add_neighbours(current_loc.first, current_loc.second);
+	if (m_current_loc.first != m_goal_loc.first || m_current_loc.second != m_goal_loc.second) {
+		add_neighbours(m_current_loc.first, m_current_loc.second);
 		find_smallest_open();
 	}
 }
