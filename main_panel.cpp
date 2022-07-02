@@ -1,7 +1,5 @@
 #include "main_panel.h"
 #include "imgui.h"
-#include "implot.h"
-#include "fundamental_delta_time.h"
 
 #include <iostream>
 
@@ -36,23 +34,15 @@ void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action
 	int grid_x = get_coord_from_location(location_x);
 	int grid_y = get_coord_from_location(location_y);
 
-	if (m_shift_down && m_grid[grid_x][grid_y].type != GOAL) {
-		m_grid[m_start_loc.first][m_start_loc.second].type = EMPTY;
-		m_grid[grid_x][grid_y].type = START;
-		m_start_loc.first = grid_x;
-		m_start_loc.second = grid_y;
-		m_current_loc = m_start_loc;
-		update_heuristic_values();
+	if (m_shift_down && m_a_star_search.m_grid[grid_x][grid_y].type != GOAL) {
+		m_a_star_search.set_goal_location(grid_x, grid_y);
 	}
 
-	if (m_ctrl_down && m_grid[grid_x][grid_y].type != START) {
-		m_grid[m_goal_loc.first][m_goal_loc.second].type = EMPTY;
-		m_grid[grid_x][grid_y].type = GOAL;
-		m_goal_loc.first = grid_x;
-		m_goal_loc.second = grid_y;
-		update_heuristic_values();
+	if (m_ctrl_down &&  m_a_star_search.m_grid[grid_x][grid_y].type != START) {
+		m_a_star_search.set_start_location(grid_x, grid_y);
 	}
 }
+
 
 void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	m_curosr_x = xpos;
@@ -66,10 +56,10 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 		int grid_y = get_coord_from_location(location_y);
 
 
-		if (m_grid[grid_x][grid_y].type != GOAL || m_grid[grid_x][grid_y].type != START) {
+		if ( m_a_star_search.m_grid[grid_x][grid_y].type != GOAL ||  m_a_star_search.m_grid[grid_x][grid_y].type != START) {
 
 			if (!m_shift_down && !m_ctrl_down) {
-				m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
+				 m_a_star_search.m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
 			}
 		}
 	}
@@ -78,48 +68,22 @@ void MAIN_PANEL::init(void) {
 
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].type = EMPTY;
-			m_grid[i][j].i_value = i;
-			m_grid[i][j].j_value = j;
+			 m_a_star_search.m_grid[i][j].type = EMPTY;
+			 m_a_star_search.m_grid[i][j].i_value = i;
+			 m_a_star_search.m_grid[i][j].j_value = j;
 		}
 	}
-	m_grid[m_start_loc.first][m_start_loc.second].type = START;
-	m_grid[m_goal_loc.first][m_goal_loc.second].type = GOAL;
+	 m_a_star_search.m_grid[m_a_star_search.m_start_loc.first][m_a_star_search.m_start_loc.second].type = START;
+	 m_a_star_search.m_grid[m_a_star_search.m_goal_loc.first][m_a_star_search.m_goal_loc.second].type = GOAL;
 
 	for (int i = 4; i < 25; i++) {
-		m_grid[20][i].type = BLOCKED;
+		 m_a_star_search.m_grid[20][i].type = BLOCKED;
 	}
 
 	for (int i = 4; i < 25; i++) {
-		m_grid[i][25].type = BLOCKED;
+		 m_a_star_search.m_grid[i][25].type = BLOCKED;
 	}
-
-	reset();
-}
-
-void MAIN_PANEL::update_heuristic_values() {
-
-	for (int i = 0; i < g_grid_size; i++) {
-		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].h_value = (MATH_VECTOR_2D(float(i), float(j)) - MATH_VECTOR_2D(float(m_goal_loc.first), float(m_goal_loc.second))).GetLength();
-		}
-	}
-}
-
-void MAIN_PANEL::reset(void) {
-	m_open.clear();
-	m_visited.clear();
-
-	for (int i = 0; i < g_grid_size; i++) {
-		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].cost = -1.0f;
-			m_grid[i][j].h_value = 0.0f;
-			m_grid[i][j].g_value = 0.0f;
-			m_grid[i][j].path.clear();
-		}
-	}
-	update_heuristic_values();
-	m_current_loc = m_start_loc;
+	m_a_star_search.reset();
 }
 
 void ImGuiToggleButton(const char* str_id, bool* v) {
@@ -143,8 +107,9 @@ void MAIN_PANEL::draw_ui(void) {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Reset")) {
-		reset();
+		m_a_star_search.reset();
 		m_start_search = false;
+		m_goal_reached = false;
 	}
 
 	ImGui::Text("Help:");
@@ -163,101 +128,6 @@ void MAIN_PANEL::draw_ui(void) {
 	ImGui::End();
 }
 
-bool  MAIN_PANEL::is_visited(int i, int j) {
-	for (int k = 0; k < m_visited.size(); k++) {
-		if ((m_visited[k]->i_value == i) && (m_visited[k]->j_value == j)) {
-			return true;
-		}
-	}
-	return false;
-}
-
-bool  MAIN_PANEL::is_open(int i, int j) {
-	for (int k = 0; k < m_open.size(); k++) {
-		if ((m_open[k]->i_value == i) && (m_open[k]->j_value == j)) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void  MAIN_PANEL::add_open(int i, int j, float move_distance) {
-
-	if (m_grid[i][j].type != BLOCKED) {
-
-		float new_g_value = float(m_current_loc_step) + move_distance;
-		float cost = new_g_value + m_grid[i][j].h_value;
-
-		if (m_grid[i][j].cost == -1.0f || cost < m_grid[i][j].cost) {
-			m_grid[i][j].g_value = new_g_value;
-			m_grid[i][j].cost = m_grid[i][j].g_value + m_grid[i][j].h_value;
-
-			m_grid[i][j].path = m_grid[m_current_loc.first][m_current_loc.second].path;
-			m_grid[i][j].path.push_back(&m_grid[m_current_loc.first][m_current_loc.second]);
-
-			remove_visited(i, j);
-		}
-
-		if (!is_open(i, j) && !is_visited(i, j)) {
-			m_open.push_back(&m_grid[i][j]);
-		}
-	}
-}
-
-void  MAIN_PANEL::remove_visited(int i, int j) {
-
-	for (size_t k = 0; k < m_visited.size(); k++) {
-		if (m_visited[k]->i_value == i && m_visited[k]->j_value == j) {
-			m_visited.erase(m_visited.begin() + k);
-			break;
-		}
-	}
-}
-
-void  MAIN_PANEL::remove_open(int i, int j) {
-
-	for (size_t k = 0; k < m_open.size(); k++) {
-		if (m_open[k]->i_value == i && m_open[k]->j_value == j) {
-			m_open.erase(m_open.begin() + k);
-			break;
-		}
-	}
-}
-
-void MAIN_PANEL::find_smallest_open() {
-	float cost = 100000.0;
-	GRID_BLOCK* smallest_block = nullptr;
-
-	for (size_t k = 0; k < m_open.size(); k++) {
-
-		if (m_open[k]->cost < cost || (smallest_block && m_open[k]->cost == smallest_block->cost && m_open[k]->h_value < smallest_block->h_value)) {
-			cost = m_open[k]->cost;
-			smallest_block = m_open[k];
-		}
-	}
-	
-
-	if (smallest_block) {
-		m_current_loc.first = smallest_block->i_value;
-		m_current_loc.second = smallest_block->j_value;
-		m_current_loc_step = smallest_block->g_value;
-
-		m_visited.push_back(smallest_block);
-		remove_open(smallest_block->i_value, smallest_block->j_value);
-	}
-}
-
-void  MAIN_PANEL::add_neighbours(int current_i, int current_j) {
-	add_open(current_i + 1,current_j, 1.0f);
-	add_open(current_i - 1,current_j, 1.0f);
-	add_open(current_i,current_j + 1, 1.0f);
-	add_open(current_i,current_j - 1, 1.0f);
-
-	add_open(current_i + 1, current_j + 1, 1.5f);
-	add_open(current_i + 1, current_j - 1, 1.5f);
-	add_open(current_i - 1, current_j + 1, 1.5f);
-	add_open(current_i - 1, current_j - 1, 1.5f);
-}
 
 void MAIN_PANEL::draw(void) {
 	draw_ui();
@@ -265,7 +135,7 @@ void MAIN_PANEL::draw(void) {
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
 
-			BLOCK_TYPE type = m_grid[i][j].type;
+			BLOCK_TYPE type = m_a_star_search.m_grid[i][j].type;
 
 			GRAPHICS_COLOUR colour = GRAPHICS_COLOUR::Grey();
 
@@ -277,9 +147,9 @@ void MAIN_PANEL::draw(void) {
 				colour = GRAPHICS_COLOUR::Red();
 			} else if (type == BLOCKED) {
 				colour = GRAPHICS_COLOUR::Black();
-			} else if (is_visited(i, j)) {
+			} else if (m_a_star_search.is_visited(i, j)) {
 				colour = GRAPHICS_COLOUR::Brown();
-			} else if (is_open(i, j)) {
+			} else if (m_a_star_search.is_open(i, j)) {
 				colour = GRAPHICS_COLOUR::Yellow();
 			}
 
@@ -287,14 +157,14 @@ void MAIN_PANEL::draw(void) {
 		}
 	}
 
-	if (m_current_loc.first == m_goal_loc.first && m_current_loc.second == m_goal_loc.second) {
-		MATH_VECTOR_2D start_coord = MATH_VECTOR_2D{ float(m_start_loc.first), float(m_start_loc.second) };
-		MATH_VECTOR_2D start_loc;
-		MATH_VECTOR_2D end_loc;
+	MATH_VECTOR_2D start_coord = MATH_VECTOR_2D{ float(m_a_star_search.m_start_loc.first), float(m_a_star_search.m_start_loc.second) };
+	MATH_VECTOR_2D start_loc;
+	MATH_VECTOR_2D end_loc;
 
-		for (size_t i = 0; i < m_grid[m_current_loc.first][m_current_loc.second].path.size(); i++) {
-			int current_i = m_grid[m_current_loc.first][m_current_loc.second].path[i]->i_value;
-			int current_j = m_grid[m_current_loc.first][m_current_loc.second].path[i]->j_value;
+	if (m_goal_reached) {
+		for (size_t i = 0; i < m_a_star_search.m_grid[m_a_star_search.m_current_loc.first][m_a_star_search.m_current_loc.second].path.size(); i++) {
+			int current_i = m_a_star_search.m_grid[m_a_star_search.m_current_loc.first][m_a_star_search.m_current_loc.second].path[i]->i_value;
+			int current_j = m_a_star_search.m_grid[m_a_star_search.m_current_loc.first][m_a_star_search.m_current_loc.second].path[i]->j_value;
 
 			start_loc = MATH_VECTOR_2D(get_box_location(start_coord.X), get_box_location(start_coord.Y));
 			end_loc = MATH_VECTOR_2D(get_box_location(current_i), get_box_location(current_j));
@@ -305,10 +175,9 @@ void MAIN_PANEL::draw(void) {
 			start_coord.Y = current_j;
 			start_loc = end_loc;
 		}
-		end_loc = MATH_VECTOR_2D(get_box_location(m_goal_loc.first), get_box_location(m_goal_loc.second));
+		end_loc = MATH_VECTOR_2D(get_box_location(m_a_star_search.m_goal_loc.first), get_box_location(m_a_star_search.m_goal_loc.second));
 		GRAPHICS_UTILITY::draw_line(start_loc, end_loc);
 	}
-
 
 }
 
@@ -316,17 +185,7 @@ void MAIN_PANEL::draw(void) {
 void MAIN_PANEL::update() {
 
 	if (m_start_search) {
-
-		// did we reach the goal yet
-		if (m_current_loc.first != m_goal_loc.first || m_current_loc.second != m_goal_loc.second) {
-
-			// add all neighbouring blocks as open nodes if they are not blocked/visited/opened
-			add_neighbours(m_current_loc.first, m_current_loc.second);
-
-			// find the open node with the smallest cost and add it as visited
-			find_smallest_open();
-		}
-
+		m_goal_reached = !m_a_star_search.update_search();
 	}
 }
 
