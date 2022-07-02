@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
 
 	auto& main_panel = GRAPHICS::init_main_panel<MAIN_PANEL>();
 
-	return GRAPHICS::main_graphics(main_panel, (int)g_panel_width, (int)g_panel_height, "DriveMeHome", false);
+	return GRAPHICS::main_graphics(main_panel, (int)g_panel_width, (int)g_panel_height, "A* Search", false);
 
 }
 
