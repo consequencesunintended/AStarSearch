@@ -79,6 +79,7 @@ void ImGuiToggleButton(const char* str_id, bool* v) {
 
 void MAIN_PANEL::draw_ui(void) {
 	ImGui::Begin("A* Search");
+	ImGui::TextWrapped("Start graph traversal and the path search algorithm based on A* Search");
 
 	if (m_start_search) {
 		if (ImGui::Button("Pause Search")) {
