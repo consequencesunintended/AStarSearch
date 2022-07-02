@@ -16,6 +16,8 @@
 constexpr float				g_panel_width{ 1024.0f };
 constexpr float				g_panel_height{ 620.0f };
 constexpr int				g_grid_size{ 40 };
+constexpr int				g_box_size = 10.0f;
+
 
 
 class MAIN_PANEL : public PANEL_INTERFACE {
@@ -65,5 +67,9 @@ private:
 	std::pair<int, int>							m_current_loc;
 	float										m_current_loc_step{ 0.0f };
 	bool										m_start_search{ false };
+	float										m_curosr_x;
+	float										m_curosr_y;
+	bool										m_left_down{ false };
+	bool										m_right_down{ false };
 
 };

@@ -6,34 +6,43 @@
 #include <iostream>
 
 
-constexpr int box_size = 10.0f;
+int get_box_location(int coord) {
+	return coord * g_box_size + (-g_grid_size / 2.0f * g_box_size);
+}
 
+int get_coord_from_location(int location) {
+	return (location - (-g_grid_size / 2.0f * g_box_size)) / g_box_size;
+}
 
 void MAIN_PANEL::controls(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (key == GLFW_KEY_UP) {
-
-
-
-	}
-	if (key == GLFW_KEY_DOWN) {
-	}
-
-	if (key == GLFW_KEY_LEFT) {
-	}
-	if (key == GLFW_KEY_RIGHT) {
-	}
-
-	if (key == GLFW_KEY_E && action == 0) {
-
-	}
 }
 
 void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		m_left_down = action == GLFW_PRESS;
+	}
 
+	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+		m_right_down = action == GLFW_PRESS;
+	}
 }
 
 void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	m_curosr_x = xpos;
+	m_curosr_y = ypos;
 
+	if (m_left_down || m_right_down) {
+		float location_x = m_curosr_x - g_panel_width / 2.0f;
+		float location_y = -m_curosr_y + g_panel_height / 2.0f;
+
+		int grid_x = get_coord_from_location(location_x);
+		int grid_y = get_coord_from_location(location_y);
+
+
+		if (m_grid[grid_x][grid_y].type != GOAL || m_grid[grid_x][grid_y].type != START) {
+			m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
+		}
+	}
 }
 void MAIN_PANEL::init(void) {
 	reset();
@@ -203,9 +212,6 @@ void MAIN_PANEL::draw(void) {
 		for (int j = 0; j < g_grid_size; j++) {
 
 			BLOCK_TYPE type = m_grid[i][j].type;
-			glPushMatrix();
-			glTranslatef(-g_grid_size / 2.0f * box_size, -g_grid_size / 2.0f * box_size, 0.0f);
-
 
 			GRAPHICS_COLOUR colour = GRAPHICS_COLOUR::Grey();
 
@@ -223,8 +229,7 @@ void MAIN_PANEL::draw(void) {
 				colour = GRAPHICS_COLOUR::Yellow();
 			}
 
-			GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(float(i * box_size), float(j * box_size)), box_size, box_size, true, colour);
-			glPopMatrix();
+			GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(get_box_location(i), get_box_location(j)), g_box_size, g_box_size, true, colour);
 		}
 	}
 
@@ -233,11 +238,7 @@ void MAIN_PANEL::draw(void) {
 		int current_j = m_grid[m_current_loc.first][m_current_loc.second].path[i]->j_value;
 
 
-		glPushMatrix();
-		glTranslatef(-g_grid_size / 2.0f * box_size, -g_grid_size / 2.0f * box_size, 0.0f);
-
-		GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(float(current_i * box_size), float(current_j * box_size)), box_size, box_size, true, GRAPHICS_COLOUR::Orange());
-		glPopMatrix();
+		GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(get_box_location(current_i), get_box_location(current_j)), g_box_size, g_box_size, true, GRAPHICS_COLOUR::Orange());
 	}
 }
 
