@@ -63,6 +63,7 @@ private:
 	std::pair<int, int>							m_start_loc{ 3,4 };
 	std::pair<int, int>							m_goal_loc{ 36,22 };
 	std::pair<int, int>							m_current_loc;
-	float										m_current_loc_step = 0;
+	float										m_current_loc_step{ 0.0f };
+	bool										m_start_search{ false };
 
 };

@@ -36,6 +36,14 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 }
 void MAIN_PANEL::init(void) {
+	reset();
+}
+
+void MAIN_PANEL::reset(void) {
+	m_open.clear();
+	m_visited.clear();
+	m_grid.clear();
+
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
 			m_grid[i][j].type = EMPTY;
@@ -64,16 +72,31 @@ void MAIN_PANEL::init(void) {
 	m_current_loc = m_start_loc;
 }
 
-void MAIN_PANEL::reset(void) {
-}
-
 void ImGuiToggleButton(const char* str_id, bool* v) {
 
 
 }
 
 void MAIN_PANEL::draw_ui(void) {
+	ImGui::Begin("A* Search");
 
+	if (m_start_search) {
+		if (ImGui::Button("Pause Search")) {
+			m_start_search = false;
+		}
+	}
+	else {
+		if (ImGui::Button("Start Search")) {
+			m_start_search = true;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Reset")) {
+		reset();
+		m_start_search = false;
+	}
+
+	ImGui::End();
 }
 
 bool  MAIN_PANEL::is_visited(int i, int j) {
@@ -173,6 +196,8 @@ void  MAIN_PANEL::add_neighbours(int current_i, int current_j) {
 }
 
 void MAIN_PANEL::draw(void) {
+	draw_ui();
+
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
 
@@ -217,14 +242,19 @@ void MAIN_PANEL::draw(void) {
 
 
 void MAIN_PANEL::update() {
-	// did we reach the goal yet
-	if (m_current_loc.first != m_goal_loc.first || m_current_loc.second != m_goal_loc.second) {
 
-		// add all neighbouring blocks as open nodes if they are not blocked/visited/opened
-		add_neighbours(m_current_loc.first, m_current_loc.second);
+	if (m_start_search) {
 
-		// find the open node with the smallest cost and add it as visited
-		find_smallest_open();
+		// did we reach the goal yet
+		if (m_current_loc.first != m_goal_loc.first || m_current_loc.second != m_goal_loc.second) {
+
+			// add all neighbouring blocks as open nodes if they are not blocked/visited/opened
+			add_neighbours(m_current_loc.first, m_current_loc.second);
+
+			// find the open node with the smallest cost and add it as visited
+			find_smallest_open();
+		}
+
 	}
 }
 
