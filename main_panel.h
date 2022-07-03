@@ -12,6 +12,8 @@
 
 constexpr float				g_panel_width{ 1024.0f };
 constexpr float				g_panel_height{ 620.0f };
+constexpr int				g_grid_size{ 40 };
+constexpr int				g_box_size = 10.0f;
 
 class MAIN_PANEL : public PANEL_INTERFACE {
 public:

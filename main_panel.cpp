@@ -34,14 +34,14 @@ void MAIN_PANEL::mouse_click_callback(GLFWwindow* window, int button, int action
 	int grid_x = get_coord_from_location(location_x);
 	int grid_y = get_coord_from_location(location_y);
 
-	if (m_shift_down && m_a_star_search.m_grid[grid_x][grid_y].type != GOAL) {
+	if (m_shift_down) {
 		m_a_star_search.set_goal_location(grid_x, grid_y);
 		reset();
 		m_start_search = false;
 		m_goal_reached = false;
 	}
 
-	if (m_ctrl_down &&  m_a_star_search.m_grid[grid_x][grid_y].type != START) {
+	if (m_ctrl_down) {
 		m_a_star_search.set_start_location(grid_x, grid_y);
 		reset();
 		m_start_search = false;
@@ -67,14 +67,16 @@ void MAIN_PANEL::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 		int grid_y = get_coord_from_location(location_y);
 
 
-		if ( m_a_star_search.m_grid[grid_x][grid_y].type != GOAL ||  m_a_star_search.m_grid[grid_x][grid_y].type != START) {
-
-			if (!m_shift_down && !m_ctrl_down) {
-				 m_a_star_search.m_grid[grid_x][grid_y].type = m_left_down ? BLOCKED : EMPTY;
-				 m_a_star_search.reset();
-				 m_start_search = false;
-				 m_goal_reached = false;
+		if (!m_shift_down && !m_ctrl_down) {
+			if (m_left_down) {
+				m_a_star_search.set_wall_location(grid_x, grid_y);
 			}
+			else {
+				m_a_star_search.set_empty_location(grid_x, grid_y);
+			}
+			m_a_star_search.reset();
+			m_start_search = false;
+			m_goal_reached = false;
 		}
 	}
 }
@@ -85,8 +87,10 @@ void MAIN_PANEL::init(void) {
 			 m_a_star_search.set_empty_location(i, j);
 		}
 	}
-	m_a_star_search.set_start_location(m_a_star_search.m_start_loc.first, m_a_star_search.m_start_loc.second);
-	m_a_star_search.set_goal_location(m_a_star_search.m_goal_loc.first, m_a_star_search.m_goal_loc.second);
+	auto			start_indicies = m_a_star_search.get_start_location();
+	auto			goal_indicies = m_a_star_search.get_goal_location();
+	m_a_star_search.set_start_location(start_indicies.first, start_indicies.second);
+	m_a_star_search.set_goal_location(goal_indicies.first, goal_indicies.second);
 
 	for (int i = 4; i < 25; i++) {
 		 m_a_star_search.set_wall_location(20, i);
@@ -151,10 +155,8 @@ void MAIN_PANEL::draw(void) {
 	for (int i = 0; i < g_grid_size; i++) {
 		for (int j = 0; j < g_grid_size; j++) {
 
-			BLOCK_TYPE type = m_a_star_search.m_grid[i][j].type;
-
+			BLOCK_TYPE		type = m_a_star_search.get_block_type(i, j);
 			GRAPHICS_COLOUR colour = GRAPHICS_COLOUR::Grey();
-
 
 			if (type == START) {
 				colour = GRAPHICS_COLOUR::Blue();
@@ -172,15 +174,16 @@ void MAIN_PANEL::draw(void) {
 			GRAPHICS_UTILITY::draw_rectangle(MATH_VECTOR_2D(get_box_location(i), get_box_location(j)), g_box_size, g_box_size, true, colour);
 		}
 	}
-
-	MATH_VECTOR_2D start_coord = MATH_VECTOR_2D{ float(m_a_star_search.m_start_loc.first), float(m_a_star_search.m_start_loc.second) };
-	MATH_VECTOR_2D start_loc;
-	MATH_VECTOR_2D end_loc;
+	auto			start_indicies = m_a_star_search.get_start_location();
+	auto			goal_indicies = m_a_star_search.get_current_location();
+	MATH_VECTOR_2D	start_coord = MATH_VECTOR_2D{ float(start_indicies.first), float(start_indicies.second) };
+	MATH_VECTOR_2D	start_loc;
+	MATH_VECTOR_2D	end_loc;
 
 	if (m_goal_reached) {
-		for (size_t i = 0; i < m_a_star_search.m_grid[m_a_star_search.m_current_loc.first][m_a_star_search.m_current_loc.second].path.size(); i++) {
-			int current_i = m_a_star_search.m_grid[m_a_star_search.m_current_loc.first][m_a_star_search.m_current_loc.second].path[i]->i_value;
-			int current_j = m_a_star_search.m_grid[m_a_star_search.m_current_loc.first][m_a_star_search.m_current_loc.second].path[i]->j_value;
+		for (size_t i = 0; i < m_a_star_search.get_current_path().size(); i++) {
+			int current_i = m_a_star_search.get_current_path()[i]->i_value;
+			int current_j = m_a_star_search.get_current_path()[i]->j_value;
 
 			start_loc = MATH_VECTOR_2D(get_box_location(start_coord.X), get_box_location(start_coord.Y));
 			end_loc = MATH_VECTOR_2D(get_box_location(current_i), get_box_location(current_j));
@@ -191,7 +194,7 @@ void MAIN_PANEL::draw(void) {
 			start_coord.Y = current_j;
 			start_loc = end_loc;
 		}
-		end_loc = MATH_VECTOR_2D(get_box_location(m_a_star_search.m_goal_loc.first), get_box_location(m_a_star_search.m_goal_loc.second));
+		end_loc = MATH_VECTOR_2D(get_box_location(goal_indicies.first), get_box_location(goal_indicies.second));
 		GRAPHICS_UTILITY::draw_line(start_loc, end_loc);
 	}
 

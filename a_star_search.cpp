@@ -4,40 +4,48 @@
 
 
 void A_STAR_SEARCH::set_goal_location(int i, int j) {
-	m_grid[m_goal_loc.first][m_goal_loc.second].type = EMPTY;
-	m_grid[i][j].type = GOAL;
-	m_goal_loc.first = i;
-	m_goal_loc.second = j;
-	update_heuristic_values();
+	if (m_grid[i][j].type != START) {
+		m_grid[m_goal_loc.first][m_goal_loc.second].type = EMPTY;
+		m_grid[i][j].type = GOAL;
+		m_goal_loc.first = i;
+		m_goal_loc.second = j;
+		update_heuristic_values();
+	}
 }
 
 void A_STAR_SEARCH::set_start_location(int i, int j) {
-	m_grid[m_start_loc.first][m_start_loc.second].type = EMPTY;
-	m_grid[i][j].type = START;
-	m_start_loc.first = i;
-	m_start_loc.second = j;
-	m_current_loc = m_start_loc;
-	update_heuristic_values();
+	if (m_grid[i][j].type != GOAL) {
+		m_grid[m_start_loc.first][m_start_loc.second].type = EMPTY;
+		m_grid[i][j].type = START;
+		m_start_loc.first = i;
+		m_start_loc.second = j;
+		m_current_loc = m_start_loc;
+		update_heuristic_values();
+	}
 }
 
 void A_STAR_SEARCH::set_empty_location(int i, int j) {
-	m_grid[i][j].type = EMPTY;
-	m_grid[i][j].i_value = i;
-	m_grid[i][j].j_value = j;
+	if (m_grid[i][j].type != GOAL || m_grid[i][j].type != START) {
+		m_grid[i][j].type = EMPTY;
+		m_grid[i][j].i_value = i;
+		m_grid[i][j].j_value = j;
+	}
 }
 
 void A_STAR_SEARCH::set_wall_location(int i, int j) {
-	m_grid[i][j].type = BLOCKED;
-	m_grid[i][j].i_value = i;
-	m_grid[i][j].j_value = j;
+	if (m_grid[i][j].type != GOAL || m_grid[i][j].type != START) {
+		m_grid[i][j].type = BLOCKED;
+		m_grid[i][j].i_value = i;
+		m_grid[i][j].j_value = j;
+	}
 }
 
 
 void A_STAR_SEARCH::update_heuristic_values() {
 
-	for (int i = 0; i < g_grid_size; i++) {
-		for (int j = 0; j < g_grid_size; j++) {
-			m_grid[i][j].h_value = (MATH_VECTOR_2D(float(i), float(j)) - MATH_VECTOR_2D(float(m_goal_loc.first), float(m_goal_loc.second))).GetLength();
+	for (auto& entity : m_grid) {
+		for (auto& internal_entity : entity.second) {
+			internal_entity.second.h_value = (MATH_VECTOR_2D(float(internal_entity.second.i_value), float(internal_entity.second.j_value)) - MATH_VECTOR_2D(float(m_goal_loc.first), float(m_goal_loc.second))).GetLength();
 		}
 	}
 }
